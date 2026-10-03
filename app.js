@@ -48,4 +48,9 @@ function renderJourney(){
  $('dailyStats').innerHTML='<div class="section-title">THỐNG KÊ SỐ ĐIẾU THEO NGÀY</div>'+days.slice().reverse().map(x=>'<div class="day-row"><span>'+pad(x.getDate())+'/'+pad(x.getMonth()+1)+'/'+x.getFullYear()+'</span><b>🚬 '+(counts[dayKey(x)]||0)+' điếu</b></div>').join('');
  $('medalStats').innerHTML='<div class="section-title">DANH HIỆU & HUY CHƯƠNG</div>'+MILESTONES.map(([h,n])=>'<div class="medal-row '+(elapsed>=h*3600?'done':'todo')+'"><span>'+(elapsed>=h*3600?'🏅':'🔒')+' '+n+'</span><b>'+(elapsed>=h*3600?'ĐÃ ĐẠT':'CHƯA ĐẠT')+'</b></div>').join('');
 }
-$('journeyBtn').onclick=()=>{renderJourney();journeyDialog.showModal()};
+$('journeyBtn').onclick=()=>{
+  renderJourney();
+  const dlg=$('journeyDialog');
+  if(typeof dlg.showModal==='function') dlg.showModal();
+  else dlg.setAttribute('open','open');
+};
