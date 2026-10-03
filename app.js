@@ -34,7 +34,7 @@ $('exportBtn').onclick=()=>{if(!data.started)return alert('Anh lưu thời đi�
 $('importInput').onchange=async e=>{let f=e.target.files[0];if(!f)return;try{let x=JSON.parse(await f.text());if(!x.started||!x.last)throw 0;data={lapses:[],craps:[],...x};persist();lastState=-1;update();alert('Đã nhập dữ liệu thành công.')}catch(err){alert('File dữ liệu không hợp lệ.')}e.target.value=''};
 $('playerName').textContent=PLAYER_NAME.toUpperCase();
 $('lapseBtn').onclick=()=>{if(!data.started)return alert('Hãy lưu thời điểm điếu cuối trước.');if(!confirm('Xác nhận vừa lỡ hút 1 điếu?\n\nĐiểm bảo vệ sức khỏe sẽ bị trừ 300 giây, nhưng hành trình KHÔNG bị reset.'))return;data.lapses=data.lapses||[];data.lapses.push({at:new Date().toISOString(),penalty:300});persist();update();alert('Đã ghi nhận 1 điếu · −300 giây bảo vệ sức khỏe. Hành trình vẫn tiếp tục!')};
-load();$('startInput').value=inputNow();update();setInterval(update,1000);setInterval(syncPlayer,30000);
+load();$('startInput').value=inputNow();update();setInterval(update,1000);
 
 function dayKey(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())}
 function renderJourney(){
