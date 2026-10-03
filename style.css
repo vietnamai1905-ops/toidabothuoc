@@ -2,3 +2,65 @@
 .player-name{margin:4px 0 2px;color:#9de2d2;font-size:12px;font-weight:900;letter-spacing:1.8px}.health-score{margin:0 0 12px;text-align:center;background:rgba(8,26,39,.9);border:1px solid #527580;border-radius:16px;padding:12px 14px;backdrop-filter:blur(5px)}.score-label{font-size:11px;font-weight:900;letter-spacing:1px;color:#9de2d2}.score-number{font:800 30px Consolas,monospace;color:#ffda97;margin:4px 0}.score-rule{font-size:10px;color:#d7e3e6}.danger{background:#8d493f;color:#fff}.rank{background:#d7ae64;color:#142737}
 .journey-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0 14px}.stat-card{background:#173746;border:1px solid #4b737c;border-radius:10px;padding:10px;text-align:center}.stat-card b{display:block;font-size:20px;color:#ffda97}.daily-stats,.medal-stats{margin:12px 0;max-height:240px;overflow:auto;border:1px solid #4b737c;border-radius:10px}.section-title{font-weight:800;color:#9de2d2;padding:10px 10px 6px}.day-row,.medal-row{display:flex;justify-content:space-between;gap:12px;padding:9px 10px;border-top:1px solid #30434b;font-size:13px}.medal-row.done{color:#ffe0ad}.medal-row.todo{color:#c8d1d6}
 @media(max-width:760px){body{background-attachment:scroll}.app{display:block;padding:12px}.hero{min-height:55vh}.next-card{margin-top:35px;margin-bottom:12px}.panel{max-height:none}.streak,.countdown{font-size:29px}h1{font-size:25px}.milestones{max-height:420px}.health-score{margin-top:0}.score-number{font-size:27px}.journey-stats{grid-template-columns:1fr 1fr}}
+/* Glass style for Journey */
+#journeyDialog{
+  background:rgba(10,28,40,.56);
+  border:1px solid rgba(212,226,232,.22);
+  box-shadow:0 18px 60px rgba(0,0,0,.38);
+  backdrop-filter:blur(18px) saturate(125%);
+  -webkit-backdrop-filter:blur(18px) saturate(125%);
+}
+#journeyDialog h3{
+  color:#f6d08a;
+  margin-top:0;
+}
+#journeyDialog .journey-stats{
+  gap:10px;
+}
+#journeyDialog .stat-card{
+  background:rgba(18,49,65,.42);
+  border:1px solid rgba(203,225,232,.16);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+}
+#journeyDialog .stat-card span{
+  color:rgba(238,246,248,.78);
+}
+#journeyDialog .stat-card b{
+  color:#f5cd82;
+}
+#journeyDialog .daily-stats,
+#journeyDialog .medal-stats{
+  background:rgba(10,31,44,.32);
+  border:1px solid rgba(198,220,228,.14);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.03);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+}
+#journeyDialog .section-title{
+  color:#b8eadf;
+  background:rgba(255,255,255,.025);
+}
+#journeyDialog .day-row,
+#journeyDialog .medal-row{
+  border-top:1px solid rgba(199,219,226,.10);
+  background:transparent;
+}
+#journeyDialog .day-row:nth-child(even),
+#journeyDialog .medal-row:nth-child(even){
+  background:rgba(255,255,255,.018);
+}
+#journeyDialog .medal-row.done{
+  color:#f6d89e;
+}
+#journeyDialog .medal-row.todo{
+  color:rgba(225,235,238,.60);
+}
+#journeyDialog .secondary.full{
+  background:rgba(37,104,120,.52);
+  color:#f5fbfc;
+  border:1px solid rgba(179,220,228,.20);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+}
