@@ -64,3 +64,7 @@
   backdrop-filter:blur(10px);
   -webkit-backdrop-filter:blur(10px);
 }
+
+/* Thời gian đã cai thuốc lớn gấp 1,5 lần đồng hồ mốc tiếp theo */
+.streak{font-size:51px}
+@media(max-width:760px){.streak{font-size:43.5px}}
