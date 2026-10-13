@@ -96,3 +96,14 @@ dialog:not(#journeyDialog){background:rgba(16,42,57,.72);backdrop-filter:blur(12
 }
 .hero-top-card .muted{margin-top:6px}
 @media(max-width:760px){.hero-top-card{padding:16px;margin-bottom:14px}}
+
+/* iPhone: cố định ảnh theo màn hình, đưa núi và mây lên phía đồng hồ */
+@media(max-width:760px){
+ body{background:#0d1c29}
+ body::before{
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:url('https://raw.githubusercontent.com/vietnamai1905-ops/Repository-name-cai-thuoc/main/cai_thuoc_bg.png') center 78% / cover no-repeat;
+ }
+ .shade{z-index:0}
+ .app{position:relative;z-index:1}
+}
