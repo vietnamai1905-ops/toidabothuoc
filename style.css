@@ -82,3 +82,17 @@
 input,textarea{background:rgba(24,55,69,.55)}
 dialog:not(#journeyDialog){background:rgba(16,42,57,.72);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
 .streak,.countdown,.score-number{text-shadow:0 2px 8px rgba(0,0,0,.6)}
+
+/* Khung kính đồng bộ cho phần đầu hành trình */
+.hero-top-card{
+ background:rgba(8,26,39,.34);
+ border:1px solid rgba(190,225,232,.32);
+ border-radius:16px;
+ padding:18px;
+ margin-bottom:16px;
+ box-shadow:0 8px 30px rgba(0,0,0,.15),inset 0 1px 0 rgba(255,255,255,.08);
+ backdrop-filter:blur(3px);
+ -webkit-backdrop-filter:blur(3px);
+}
+.hero-top-card .muted{margin-top:6px}
+@media(max-width:760px){.hero-top-card{padding:16px;margin-bottom:14px}}
