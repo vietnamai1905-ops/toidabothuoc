@@ -11,20 +11,28 @@ function pad(n){return String(n).padStart(2,'0')}
 function duration(sec){sec=Math.max(0,Math.floor(sec));let d=Math.floor(sec/86400);sec%=86400;let h=Math.floor(sec/3600);sec%=3600;let m=Math.floor(sec/60),s=sec%60;return d?`${d} ngày ${pad(h)}:${pad(m)}:${pad(s)}`:`${pad(h)}:${pad(m)}:${pad(s)}`}
 function fmt(dt){return `${pad(dt.getHours())}:${pad(dt.getMinutes())} · ${pad(dt.getDate())}/${pad(dt.getMonth()+1)}/${dt.getFullYear()}`}
 function inputNow(){let d=new Date(),off=d.getTimezoneOffset()*60000;return new Date(d-off).toISOString().slice(0,16)}
-function score(elapsed){return Math.max(0,Math.floor(elapsed)-(data.lapses?.length||0)*300)}
+function totalTracked(now=new Date()){return data.started?Math.max(0,(now-new Date(data.started))/1000):0}
+const SHORT=MILESTONES.filter(x=>x[0]<336),LONG=MILESTONES.filter(x=>x[0]>=336);
 function update(){
  if(!data.started){$('healthScore').textContent='0';$('streak').textContent='Chưa bắt đầu';$('nextTitle').textContent='MỐC ĐẦU TIÊN · '+MILESTONES[0][1].toUpperCase();$('benefit').textContent=MILESTONES[0][2];renderList(0);return}
  const last=new Date(data.last||data.started), now=new Date(), elapsed=Math.max(0,(now-last)/1000), journeyElapsed=Math.max(0,(now-new Date(data.started))/1000);
- $('healthScore').textContent=score(journeyElapsed).toLocaleString('vi-VN');
+ $('healthScore').textContent=duration(totalTracked(now));
  $('streak').textContent=duration(journeyElapsed);$('meta').textContent='Hành trình từ '+fmt(new Date(data.started))+' · Không hút liên tục: '+duration(elapsed);
  $('journey').textContent='Bắt đầu hành trình: '+fmt(new Date(data.started))+'  ·  Ghi chú CRAP: '+data.craps.length;
  $('recent').textContent=data.craps.length?'Gần nhất: '+data.craps.at(-1).thoughts:'Khi thấy thèm hoặc trống trải, bấm CRAP để ghi lại cảm giác.';
  let prev=0,found=false;
- for(const [hours,name,benefit] of MILESTONES){let t=hours*3600;if(elapsed<t){$('nextTitle').textContent='MỐC TIẾP THEO · '+name.toUpperCase();$('countdown').textContent=duration(t-elapsed);$('benefit').textContent=benefit;$('target').textContent='Dự kiến: '+fmt(new Date(last.getTime()+t*1000));$('barFill').style.width=Math.max(0,Math.min(100,(elapsed-prev)/(t-prev)*100))+'%';found=true;break}prev=t}
+ for(const [hours,name,benefit] of SHORT){let t=hours*3600;if(elapsed<t){$('nextTitle').textContent='MỐC TIẾP THEO · '+name.toUpperCase();$('countdown').textContent=duration(t-elapsed);$('benefit').textContent=benefit;$('target').textContent='Dự kiến: '+fmt(new Date(last.getTime()+t*1000));$('barFill').style.width=Math.max(0,Math.min(100,(elapsed-prev)/(t-prev)*100))+'%';found=true;break}prev=t}
  if(!found){$('nextTitle').textContent='ĐÃ QUA TẤT CẢ MỐC TRONG APP';$('countdown').textContent='Tiếp tục mỗi ngày';$('benefit').textContent='Duy trì không hút thuốc giúp lợi ích sức khỏe tiếp tục tích lũy.';$('target').textContent='';$('barFill').style.width='100%'}
  renderList(elapsed)
 }
-let lastState=-1;function renderList(elapsed){let state=MILESTONES.filter(x=>elapsed>=x[0]*3600).length;if(state===lastState)return;lastState=state;$('milestones').innerHTML=MILESTONES.map(([h,n,b])=>`<div class="milestone ${elapsed>=h*3600?'done':'todo'}">${elapsed>=h*3600?'✓':'○'} &nbsp;${n} · ${b}</div>`).join('')}
+let lastState=-1;
+function renderList(elapsed){
+ let state=SHORT.filter(x=>elapsed>=x[0]*3600).length, day=Math.floor(totalTracked()/86400),count=(data.lapses||[]).length;
+ if(state===lastState&&window._day===day&&window._count===count)return;
+ lastState=state;window._day=day;window._count=count;
+ $('milestones').innerHTML='<div class="section-title">NGẮN HẠN · TỪ ĐIẾU CUỐI</div>'+SHORT.map(([h,n,b])=>'<div class="milestone '+(Math.max(0,(today-new Date(data.last||data.started))/1000)>=h*3600?'done':'todo')+'">'+(elapsed>=h*3600?'✓':'○')+' '+esc(n)+' · '+esc(b)+'</div>').join('')+'<div class="section-title">DÀI HẠN · THÔNG TIN THAM KHẢO</div><div class="milestone">Hành trình '+day+' ngày; đã ghi '+count+' lần hút lại. Không thể xác định mức phục hồi từ số lần hút và đồng hồ.</div>'+LONG.map(([h,n,b])=>'<div class="milestone todo">◈ '+esc(n)+' · '+esc(b)+'<br><small>Tham khảo khi duy trì cai thuốc; không xác nhận đã đạt.</small></div>').join('');
+}
+
 $('saveStart').onclick=()=>{let d=new Date($('startInput').value);if(!d.getTime())return alert('Anh chọn thời điểm điếu cuối trước nhé.');if(d>new Date())return alert('Thời điểm điếu cuối không thể ở tương lai.');if(data.started){alert('Mốc hành trình đã được khóa để không phải bắt đầu lại. Điếu hút lại hãy ghi bằng nút “Lỡ hút 1 điếu”. Dữ liệu cũ vẫn được giữ.');return;}data={started:d.toISOString(),last:d.toISOString(),lapses:[],craps:[]};lastState=-1;persist();update()};
 $('crapBtn').onclick=()=>{if(!data.started)return alert('Hãy lưu thời điểm điếu cuối trước.');let opts=ADVICE.filter(x=>x!==lastAdvice),a=opts[Math.floor(Math.random()*opts.length)];lastAdvice=a;$('advice').textContent=a;$('thoughts').value='';crapDialog.showModal()};
 $('saveCrap').onclick=()=>{let t=$('thoughts').value.trim();if(!t)return alert('Anh viết vài chữ về cảm giác lúc này rồi lưu nhé.');data.craps.push({at:new Date().toISOString(),advice:$('advice').textContent,thoughts:t});persist();crapDialog.close();update()};
@@ -33,7 +41,7 @@ function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;',
 $('exportBtn').onclick=()=>{if(!data.started)return alert('Anh lưu thời điểm bắt đầu trước khi xuất file nhé.');let blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='CaiThuoc_DuLieu_'+new Date().toISOString().slice(0,16).replace(/[-:T]/g,'')+'.json';a.click();URL.revokeObjectURL(a.href)};
 $('importInput').onchange=async e=>{let f=e.target.files[0];if(!f)return;try{let x=JSON.parse(await f.text());if(!x.started||!x.last||!Number.isFinite(Date.parse(x.started))||!Number.isFinite(Date.parse(x.last))||!Array.isArray(x.lapses||[])||!Array.isArray(x.craps||[]))throw 0;if(data.started&&!confirm('Nhập dữ liệu sẽ thay thế dữ liệu hiện tại. Anh đã xuất bản sao lưu chưa?'))return;data={lapses:[],craps:[],...x};persist();lastState=-1;update();alert('Đã nhập dữ liệu thành công.')}catch(err){alert('File dữ liệu không hợp lệ.')}e.target.value=''};
 $('playerName').textContent=PLAYER_NAME.toUpperCase();
-$('lapseBtn').onclick=()=>{if(!data.started)return alert('Hãy lưu thời điểm điếu cuối trước.');if(!confirm('Xác nhận vừa lỡ hút 1 điếu?\n\nMốc hành trình KHÔNG bị reset. Đồng hồ không hút liên tục sẽ tính lại từ điếu này.'))return;data.lapses=data.lapses||[];const at=new Date().toISOString();data.lapses.push({at,penalty:300});data.last=at;lastState=-1;persist();update();alert('Đã ghi nhận một lần hút lại. Mốc hành trình giữ nguyên; đồng hồ không hút liên tục tính từ điếu vừa hút. Tiếp tục ngay, không chờ ngày đẹp!')};
+$('lapseBtn').onclick=()=>{if(!data.started)return alert('Hãy lưu thời điểm điếu cuối trước.');if(!confirm('Xác nhận vừa lỡ hút 1 điếu?\n\nMốc hành trình KHÔNG bị reset. Đồng hồ không hút liên tục sẽ tính lại từ điếu này.'))return;data.lapses=data.lapses||[];const at=new Date().toISOString();data.lapses.push({at});data.last=at;lastState=-1;persist();update();alert('Đã ghi nhận một lần hút lại. Mốc hành trình giữ nguyên; đồng hồ không hút liên tục tính từ điếu vừa hút. Tiếp tục ngay, không chờ ngày đẹp!')};
 load();$('startInput').value=inputNow();update();setInterval(update,1000);
 
 function dayKey(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())}
@@ -43,10 +51,10 @@ function renderJourney(){
  for(const x of (data.lapses||[])){const d=new Date(x.at);counts[dayKey(d)]=(counts[dayKey(d)]||0)+1}
  let days=[],d=new Date(start.getFullYear(),start.getMonth(),start.getDate()),end=new Date(today.getFullYear(),today.getMonth(),today.getDate());
  while(d<=end){days.push(new Date(d));d.setDate(d.getDate()+1)}
- const total=(data.lapses||[]).length,zero=days.filter(x=>!(counts[dayKey(x)]||0)).length,elapsed=Math.max(0,(today-new Date(data.started))/1000),earned=MILESTONES.filter(x=>elapsed>=x[0]*3600).length;
- $('journeyStats').innerHTML='<div class="stat-card"><span>Tổng điếu</span><b>'+total+'</b></div><div class="stat-card"><span>Ngày 0 điếu</span><b>'+zero+'</b></div><div class="stat-card"><span>Danh hiệu</span><b>'+earned+'/'+MILESTONES.length+'</b></div>';
+ const total=(data.lapses||[]).length,zero=days.filter(x=>!(counts[dayKey(x)]||0)).length,elapsed=Math.max(0,(today-new Date(data.started))/1000),earned=SHORT.filter(x=>Math.max(0,(today-new Date(data.last||data.started))/1000)>=x[0]*3600).length;
+ $('journeyStats').innerHTML='<div class="stat-card"><span>Tổng điếu</span><b>'+total+'</b></div><div class="stat-card"><span>Ngày 0 điếu</span><b>'+zero+'</b></div><div class="stat-card"><span>Danh hiệu</span><b>'+earned+'/'+SHORT.length+'</b></div>';
  $('dailyStats').innerHTML='<div class="section-title">THỐNG KÊ SỐ ĐIẾU THEO NGÀY</div>'+days.slice().reverse().map(x=>'<div class="day-row"><span>'+pad(x.getDate())+'/'+pad(x.getMonth()+1)+'/'+x.getFullYear()+'</span><b>🚬 '+(counts[dayKey(x)]||0)+' điếu</b></div>').join('');
- $('medalStats').innerHTML='<div class="section-title">DANH HIỆU & HUY CHƯƠNG</div>'+MILESTONES.map(([h,n])=>'<div class="medal-row '+(elapsed>=h*3600?'done':'todo')+'"><span>'+(elapsed>=h*3600?'🏅':'🔒')+' '+n+'</span><b>'+(elapsed>=h*3600?'ĐÃ ĐẠT':'CHƯA ĐẠT')+'</b></div>').join('');
+ $('medalStats').innerHTML='<div class="section-title">DANH HIỆU & HUY CHƯƠNG</div>'+SHORT.map(([h,n])=>'<div class="medal-row '+(elapsed>=h*3600?'done':'todo')+'"><span>'+(Math.max(0,(today-new Date(data.last||data.started))/1000)>=h*3600?'🏅':'🔒')+' '+n+'</span><b>'+(Math.max(0,(today-new Date(data.last||data.started))/1000)>=h*3600?'ĐÃ ĐẠT':'CHƯA ĐẠT')+'</b></div>').join('');
 }
 $('journeyBtn').onclick=()=>{
   renderJourney();
