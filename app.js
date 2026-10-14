@@ -27,10 +27,15 @@ function update(){
 }
 let lastState=-1;
 function renderList(elapsed){
- let state=SHORT.filter(x=>elapsed>=x[0]*3600).length, day=Math.floor(totalTracked()/86400),count=(data.lapses||[]).length;
+ const state=SHORT.filter(x=>elapsed>=x[0]*3600).length;
+ const day=Math.floor(totalTracked()/86400),count=(data.lapses||[]).length;
  if(state===lastState&&window._day===day&&window._count===count)return;
  lastState=state;window._day=day;window._count=count;
- $('milestones').innerHTML='<div class="section-title">NGẮN HẠN · TỪ ĐIẾU CUỐI</div>'+SHORT.map(([h,n,b])=>'<div class="milestone '+(Math.max(0,(today-new Date(data.last||data.started))/1000)>=h*3600?'done':'todo')+'">'+(elapsed>=h*3600?'✓':'○')+' '+esc(n)+' · '+esc(b)+'</div>').join('')+'<div class="section-title">DÀI HẠN · THÔNG TIN THAM KHẢO</div><div class="milestone">Hành trình '+day+' ngày; đã ghi '+count+' lần hút lại. Không thể xác định mức phục hồi từ số lần hút và đồng hồ.</div>'+LONG.map(([h,n,b])=>'<div class="milestone todo">◈ '+esc(n)+' · '+esc(b)+'<br><small>Tham khảo khi duy trì cai thuốc; không xác nhận đã đạt.</small></div>').join('');
+ const shortHtml=SHORT.map(([h,n,b])=>'<div class="milestone '+(elapsed>=h*3600?'done':'todo')+'">'+(elapsed>=h*3600?'✓ ĐÃ ĐẠT':'○ CHƯA ĐẠT')+' · '+esc(n)+' · '+esc(b)+'</div>').join('');
+ // Các mốc dài hạn là thành tích thời gian hành trình, không phải xác nhận phục hồi y khoa.
+ const journeyHours=totalTracked()/3600;
+ const longHtml=LONG.map(([h,n,b])=>'<div class="milestone '+(journeyHours>=h?'done':'todo')+'">'+(journeyHours>=h?'🏅 ĐÃ ĐẠT MỐC HÀNH TRÌNH':'🔒 CHƯA ĐẠT MỐC HÀNH TRÌNH')+' · '+esc(n)+'<br><small>'+esc(b)+' · Thông tin sức khỏe tham khảo; không xác nhận đã phục hồi.</small></div>').join('');
+ $('milestones').innerHTML='<div class="section-title">MỐC KHÔNG HÚT LIÊN TỤC · TỪ ĐIẾU CUỐI ('+state+'/'+SHORT.length+' ĐÃ ĐẠT)</div>'+shortHtml+'<div class="section-title">MỐC HÀNH TRÌNH · KHÔNG RESET ('+LONG.filter(x=>journeyHours>=x[0]).length+'/'+LONG.length+' ĐÃ ĐẠT)</div><div class="milestone">Đã theo dõi '+day+' ngày; ghi nhận '+count+' lần hút lại. Thành tích hành trình không đồng nghĩa đã đạt mức phục hồi sức khỏe.</div>'+longHtml;
 }
 
 $('saveStart').onclick=()=>{let d=new Date($('startInput').value);if(!d.getTime())return alert('Anh chọn thời điểm điếu cuối trước nhé.');if(d>new Date())return alert('Thời điểm điếu cuối không thể ở tương lai.');if(data.started){alert('Mốc hành trình đã được khóa để không phải bắt đầu lại. Điếu hút lại hãy ghi bằng nút “Lỡ hút 1 điếu”. Dữ liệu cũ vẫn được giữ.');return;}data={started:d.toISOString(),last:d.toISOString(),lapses:[],craps:[]};lastState=-1;persist();update()};
