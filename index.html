@@ -9,8 +9,8 @@
 <div id="benefit" class="benefit"></div><div class="bar"><div id="barFill"></div></div><div id="target" class="muted"></div></div>
 <div class="health-score"><div class="score-label">🚭 THỜI GIAN KHÔNG HÚT LIÊN TỤC</div><div id="healthScore" class="score-number">0</div><div class="score-rule">Tính từ lần hút gần nhất · Hút lại sẽ bắt đầu đếm từ 0</div></div>
 </section>
-<section class="panel"><label>Mốc bắt đầu hành trình (chỉ lưu lần đầu)</label><input id="startInput" type="datetime-local">
-<div class="buttons"><button id="saveStart">Khóa mốc hành trình</button><button id="crapBtn" class="secondary">CRAP · Ghi cảm nghĩ</button></div>
+<section class="panel"><label>Mốc bắt đầu hành trình (có thể điều chỉnh)</label><input id="startInput" type="datetime-local">
+<div class="buttons"><button id="saveStart">Lưu / Điều chỉnh mốc</button><button id="crapBtn" class="secondary">CRAP · Ghi cảm nghĩ</button></div>
 <div class="buttons"><button id="lapseBtn" class="danger">🚬 Ghi nhận hút lại</button><button id="journeyBtn" class="rank">🏅 Hành trình</button></div>
 <div class="buttons"><button id="exportBtn" class="outline">↓ Lưu dữ liệu ra file riêng</button><label class="button secondary">↑ Nhập dữ liệu<input id="importInput" type="file" accept=".json" hidden></label></div>
 <button id="historyBtn" class="secondary full">Xem các ghi chú CRAP</button>
@@ -20,4 +20,4 @@
 <dialog id="crapDialog"><h3>CRAP · Ghi lại khoảnh khắc</h3><p>Lúc này anh đang cảm thấy thế nào?</p><p id="advice" class="tip"></p><textarea id="thoughts" placeholder="Viết điều đang nghĩ, nguyên nhân khiến anh muốn hút, hoặc cách anh vừa vượt qua..."></textarea><div class="buttons"><button id="saveCrap">Lưu cảm nghĩ</button><button class="secondary" onclick="crapDialog.close()">Đóng</button></div></dialog>
 <dialog id="historyDialog"><h3>Ghi chú CRAP</h3><div id="history"></div><button class="secondary full" onclick="historyDialog.close()">Đóng</button></dialog>
 <dialog id="journeyDialog"><h3>🏅 Hành trình</h3><div id="journeyStats" class="journey-stats"></div><div id="dailyStats" class="daily-stats"></div><div id="medalStats" class="medal-stats"></div><button class="secondary full" onclick="journeyDialog.close()">Đóng</button></dialog>
-<script src="app.js?v=20261021-continuous-clock"></script></body></html>
+<script src="app.js?v=20261021-edit-start"></script></body></html>
