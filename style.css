@@ -107,3 +107,8 @@ dialog:not(#journeyDialog){background:rgba(16,42,57,.72);backdrop-filter:blur(12
  .shade{z-index:0}
  .app{position:relative;z-index:1}
 }
+
+/* Continuous smoke-free timer: prominent but distinct from journey clock */
+.health-score .score-number{color:#9ff3d5;font-size:clamp(34px,5vw,48px);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.health-score .score-label{font-size:clamp(12px,2.5vw,16px)}
+@media(max-width:760px){.health-score .score-number{font-size:clamp(34px,8vw,46px)}}
