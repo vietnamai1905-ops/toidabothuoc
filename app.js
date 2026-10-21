@@ -16,7 +16,7 @@ const SHORT=MILESTONES.filter(x=>x[0]<336),LONG=MILESTONES.filter(x=>x[0]>=336);
 function update(){
  if(!data.started){$('healthScore').textContent='0';$('streak').textContent='Chưa bắt đầu';$('nextTitle').textContent='MỐC ĐẦU TIÊN · '+MILESTONES[0][1].toUpperCase();$('benefit').textContent=MILESTONES[0][2];renderList(0);return}
  const last=new Date(data.last||data.started), now=new Date(), elapsed=Math.max(0,(now-last)/1000), journeyElapsed=Math.max(0,(now-new Date(data.started))/1000);
- $('healthScore').textContent=duration(totalTracked(now));
+ $('healthScore').textContent=duration(elapsed);
  $('streak').textContent=duration(journeyElapsed);$('meta').textContent='Hành trình từ '+fmt(new Date(data.started))+' · Không hút liên tục: '+duration(elapsed);
  $('journey').textContent='Bắt đầu hành trình: '+fmt(new Date(data.started))+'  ·  Ghi chú CRAP: '+data.craps.length;
  $('recent').textContent=data.craps.length?'Gần nhất: '+data.craps.at(-1).thoughts:'Khi thấy thèm hoặc trống trải, bấm CRAP để ghi lại cảm giác.';
